@@ -11,6 +11,30 @@
 
 收到指令后先扫描 `<available_skills>`，有匹配就用 skill 完成，没有再自行处理。
 
+### 显式 skill 命令强制执行 #绝对规则
+
+**以下任一触发时，必须立即加载对应 SKILL.md 并完整执行 skill 流程，不得降级为普通流程：**
+
+1. 用户发送 `/skill:xxx` 命令（任意 skill 名称）
+2. 用户发送"Use the [skill-name] skill" / "用 skill 做 xxx"
+3. 用户说"走质检" / "走质量门" / "触发 skill"
+4. **任何时候用户明确要求使用某个 skill**
+
+**执行步骤：**
+1. 用 `read` 工具加载 SKILL.md（不得跳过，不得"我知道大概"就直接执行）
+2. 按 SKILL.md 定义的流程执行（每个步骤都要走完）
+3. 输出前强制执行质检（来自 skill 自己的 checklist，不是通用 checklist）
+4. 输出末尾附加 skill 定义的质检标记（如 `[质检: reasoning ✓]`）
+
+**反面模式（绝对禁止）：**
+- ❌ "我读过了，直接执行" — 每次都必须重新读取 skill 文件
+- ❌ 读了一遍 skill 但跳过了 skill 定义的执行步骤，自己按 AGENTS.md 的通用规则走
+- ❌ 用 AGENTS.md 的通用质检替代 skill 自己的 checklist
+
+**理由：** skill 是用户的显式意图，不是建议。降级执行等于忽略用户指令。
+
+---
+
 **搜索/抓取类任务优先走 agent-reach 路由：**
 | 场景 | 命令 |
 |------|------|
